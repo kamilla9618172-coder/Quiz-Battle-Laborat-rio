@@ -1,0 +1,444 @@
+/* ============================================================
+   QUIZ BATTLE — style.css
+   Tudo cabe na viewport (sem rolagem): o painel tem a altura da
+   tela e cada tela interna se distribui dentro dele. Tamanhos usam
+   clamp() com vh/vw para se adaptar a telas baixas e altas.
+   ============================================================ */
+
+:root {
+  --bg: #0b0e27;
+  --panel: #141936;
+  --card: #0e1230;
+  --panel-border: #2a3166;
+  --text: #e7e6fa;
+  --muted: #8c90be;
+  --violeta: #7b5cff;
+  --magenta: #ff3d77;
+  --ciano: #39e6c4;
+  --erro: #ff5d5d;
+
+  --fonte-mono: "Courier New", ui-monospace, Menlo, monospace;
+  --fonte-base: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* IMPORTANTE: sem esta regra, "display: flex/grid" das telas anula o
+   atributo hidden e todas as telas aparecem empilhadas ao mesmo tempo. */
+[hidden] {
+  display: none !important;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(123, 92, 255, 0.2), transparent 45%),
+    radial-gradient(circle at 88% 92%, rgba(255, 61, 119, 0.15), transparent 45%),
+    var(--bg);
+  font-family: var(--fonte-base);
+  color: var(--text);
+}
+
+/* ---------- Estrutura geral ---------- */
+
+.arena {
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(10px, 2.5vh, 28px) clamp(10px, 2.5vw, 32px);
+}
+
+/* Cantos de "moldura de HUD" nos cantos da janela */
+.arena::before,
+.arena::after {
+  content: "";
+  position: fixed;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--ciano);
+  opacity: 0.5;
+  pointer-events: none;
+}
+.arena::before { top: 12px; left: 12px; border-right: none; border-bottom: none; }
+.arena::after  { bottom: 12px; right: 12px; border-left: none; border-top: none; }
+
+.painel {
+  width: 100%;
+  max-width: 1360px;
+  height: 100%;
+  max-height: 960px;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  padding: clamp(14px, 3vh, 32px) clamp(16px, 3vw, 40px);
+  overflow: auto; /* rede de segurança: só aparece em telas minúsculas */
+}
+
+.cabecalho {
+  text-align: center;
+  margin-bottom: clamp(8px, 2vh, 22px);
+  flex-shrink: 0;
+}
+
+.cabecalho__tag {
+  display: inline-block;
+  font-family: var(--fonte-mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--ciano);
+  border: 1px solid rgba(57, 230, 196, 0.4);
+  padding: 2px 10px;
+  border-radius: 3px;
+}
+
+.cabecalho__titulo {
+  margin: clamp(6px, 1.2vh, 12px) 0 0;
+  font-size: clamp(20px, min(4.6vh, 6vw), 46px);
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.tela {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(8px, 1.8vh, 16px);
+}
+
+/* ---------- Botões e campos ---------- */
+
+.botao {
+  font-family: var(--fonte-base);
+  font-size: clamp(15px, 2.4vh, 21px);
+  font-weight: 600;
+  padding: clamp(11px, 2.2vh, 16px) 18px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: filter 0.15s, border-color 0.15s;
+}
+
+.botao--primario {
+  color: #0b0e27;
+  background: linear-gradient(90deg, var(--ciano), var(--violeta) 130%);
+}
+.botao--primario:hover { filter: brightness(1.08); }
+.botao--primario:disabled { opacity: 0.5; cursor: not-allowed; filter: none; }
+
+.botao--fantasma {
+  color: var(--text);
+  background: transparent;
+  border-color: var(--panel-border);
+}
+.botao--fantasma:hover { border-color: var(--violeta); }
+
+.acoes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.acoes--linha {
+  flex-direction: row;
+  justify-content: center;
+}
+.acoes--linha .botao {
+  min-width: 190px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: clamp(14px, 2.2vh, 19px);
+  color: var(--muted);
+}
+
+.campo input {
+  font-family: var(--fonte-base);
+  font-size: clamp(16px, 2.6vh, 22px);
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  padding: clamp(11px, 2.2vh, 16px) 14px;
+}
+.campo input:focus {
+  outline: none;
+  border-color: var(--violeta);
+  box-shadow: 0 0 0 3px rgba(123, 92, 255, 0.25);
+}
+
+.campo-erro {
+  min-height: 16px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--erro);
+}
+
+/* ---------- Tela 1: nome + ranking em duas colunas ---------- */
+
+.tela--nome {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: center;
+  gap: clamp(20px, 4vw, 56px);
+}
+
+.nome__form {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 1.4vh, 12px);
+}
+
+.tela-nome__intro {
+  margin: 0 0 4px;
+  color: var(--muted);
+  font-size: clamp(14px, 2.6vh, 21px);
+  line-height: 1.55;
+}
+
+.ranking-preview {
+  background: var(--card);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: clamp(12px, 2.4vh, 20px) clamp(14px, 2vw, 22px);
+}
+
+.ranking-preview__titulo {
+  margin: 0 0 10px;
+  font-family: var(--fonte-mono);
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--magenta);
+}
+
+/* ---------- Tela 2: quiz ---------- */
+
+.tela--quiz {
+  justify-content: flex-start;
+  gap: clamp(8px, 1.6vh, 14px);
+}
+
+.quiz-topo {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  font-family: var(--fonte-mono);
+  font-size: 13px;
+}
+.quiz-topo__jogador { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.progresso__texto   { color: var(--muted); }
+.quiz-topo__pontos  { color: var(--ciano); text-align: right; font-weight: 700; }
+
+.progresso__trilha {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--card);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.progresso__barra {
+  height: 100%;
+  width: 10%;
+  background: linear-gradient(90deg, var(--violeta), var(--magenta));
+  transition: width 0.25s ease;
+}
+
+/* A pergunta ocupa o espaço do meio, centralizada; as alternativas
+   ficam ancoradas embaixo — o espaço sobrando se distribui em volta da
+   pergunta em vez de virar um vão vazio no fim. */
+.pergunta {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  font-size: clamp(18px, min(4.4vh, 5.2vw), 46px);
+  line-height: 1.35;
+}
+
+.alternativas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(8px, 1.6vh, 14px);
+}
+
+.alternativa {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  font-family: var(--fonte-base);
+  font-size: clamp(14px, 2.6vh, 23px);
+  line-height: 1.3;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  padding: clamp(10px, 2.2vh, 18px) 14px;
+  min-height: clamp(52px, 11vh, 120px);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.alternativa:hover:not([disabled]) { border-color: var(--violeta); }
+.alternativa[disabled] { cursor: default; }
+
+.alternativa__letra {
+  flex: 0 0 auto;
+  width: clamp(26px, 4vh, 38px);
+  height: clamp(26px, 4vh, 38px);
+  display: grid;
+  place-items: center;
+  font-family: var(--fonte-mono);
+  font-size: clamp(13px, 2vh, 18px);
+  font-weight: 700;
+  color: var(--violeta);
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+}
+
+.alternativa.correta {
+  border-color: var(--ciano);
+  background: rgba(57, 230, 196, 0.12);
+}
+.alternativa.correta .alternativa__letra { color: var(--ciano); border-color: var(--ciano); }
+.alternativa.errada {
+  border-color: var(--erro);
+  background: rgba(255, 93, 93, 0.12);
+}
+.alternativa.errada .alternativa__letra { color: var(--erro); border-color: var(--erro); }
+
+/* ---------- Tela 3: resultado ---------- */
+
+.tela--resultado {
+  align-items: center;
+  text-align: center;
+}
+.resultado__selo {
+  font-family: var(--fonte-mono);
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--magenta);
+}
+.resultado__jogador { margin: 0; color: var(--muted); font-size: clamp(15px, 2.4vh, 22px); }
+.resultado__pontos {
+  margin: 0;
+  font-family: var(--fonte-mono);
+  font-size: clamp(56px, 14vh, 150px);
+  font-weight: 700;
+  line-height: 1;
+}
+.resultado__legenda { margin: 0; color: var(--muted); font-size: 15px; }
+
+/* ---------- Tela 4 e preview: listas de ranking ---------- */
+
+.tela--ranking {
+  align-items: center;
+}
+
+.ranking-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 1.6vh, 12px);
+  width: 100%;
+}
+
+/* Top 10 em duas colunas (1–5 à esquerda, 6–10 à direita) */
+.ranking-lista--grade {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(5, auto);
+  grid-auto-flow: column;
+  column-gap: clamp(16px, 3vw, 40px);
+}
+
+.ranking-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--card);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  padding: clamp(7px, 2vh, 15px) 14px;
+}
+.ranking-preview .ranking-item {
+  background: var(--panel);
+}
+
+.ranking-item__posicao {
+  font-family: var(--fonte-mono);
+  font-size: clamp(14px, 2.2vh, 20px);
+  color: var(--muted);
+  width: 2.2em;
+}
+.ranking-item__nome {
+  flex: 1;
+  font-size: clamp(14.5px, 2.4vh, 22px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ranking-item__pontos {
+  font-family: var(--fonte-mono);
+  font-size: clamp(14px, 2.2vh, 20px);
+  color: var(--ciano);
+}
+
+.ranking-item--top1 .ranking-item__posicao { color: var(--magenta); font-weight: 700; }
+.ranking-item--top2 .ranking-item__posicao { color: var(--ciano); font-weight: 700; }
+.ranking-item--top3 .ranking-item__posicao { color: var(--violeta); font-weight: 700; }
+
+.ranking-vazio {
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+  margin: 6px 0;
+}
+
+/* ---------- Telas estreitas (celular em pé) ---------- */
+
+@media (max-width: 819px) {
+  .painel { max-height: none; }
+  .tela--nome {
+    grid-template-columns: 1fr;
+    align-content: center;
+    gap: 14px;
+  }
+  /* no celular o preview mostra só o top 3 para caber sem rolagem */
+  .ranking-preview .ranking-item:nth-child(n + 4) { display: none; }
+
+  .alternativas { grid-template-columns: 1fr; }
+  .alternativa  { min-height: 0; }
+
+  .ranking-lista--grade {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    grid-auto-flow: row;
+  }
+  .ranking-item { padding: 7px 12px; }
+
+  .acoes--linha { flex-direction: column; width: 100%; }
+}
+
+/* ---------- Telas baixas (notebook com barras do navegador) ---------- */
+
+@media (max-height: 560px) {
+  .cabecalho__tag { display: none; }
+  .alternativa__letra { width: 24px; height: 24px; }
+}

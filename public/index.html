@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz Battle — Desafio do Conhecimento</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <main class="arena">
+    <div class="painel">
+
+      <header class="cabecalho">
+        <span class="cabecalho__tag">QUIZ BATTLE</span>
+        <h1 class="cabecalho__titulo">Desafio do Conhecimento</h1>
+      </header>
+
+      <!-- TELA 1: identificação do jogador + ranking atual -->
+      <section class="tela tela--nome" id="tela-nome" data-tela>
+        <div class="nome__form">
+          <p class="tela-nome__intro">
+            Perguntas sobre front-end, back-end e web. Cada acerto vale 10
+            pontos. No fim, sua pontuação entra para o ranking da turma.
+          </p>
+          <label class="campo" for="input-nome">
+            Como você quer aparecer no ranking?
+            <input
+              type="text"
+              id="input-nome"
+              maxlength="20"
+              placeholder="Seu nome ou apelido"
+              autocomplete="off"
+            />
+          </label>
+          <p class="campo-erro" id="erro-nome"></p>
+          <div class="acoes">
+            <button class="botao botao--primario" id="botao-iniciar">
+              Começar desafio
+            </button>
+            <button class="botao botao--fantasma" id="botao-ver-ranking-inicio">
+              Ver ranking completo
+            </button>
+          </div>
+        </div>
+
+        <!-- Ranking atual: carregado automaticamente assim que a página abre -->
+        <aside class="ranking-preview">
+          <p class="ranking-preview__titulo">Ranking atual</p>
+          <ol class="ranking-lista" id="ranking-preview-lista"></ol>
+          <p class="ranking-vazio" id="ranking-preview-vazio" hidden>
+            Ninguém pontuou ainda. Seja o primeiro!
+          </p>
+        </aside>
+      </section>
+
+      <!-- TELA 2: pergunta em andamento -->
+      <section class="tela tela--quiz" id="tela-quiz" data-tela hidden>
+        <div class="quiz-topo">
+          <span class="quiz-topo__jogador" id="quiz-jogador">Jogador</span>
+          <span class="progresso__texto" id="progresso-texto">Pergunta 1 de 10</span>
+          <span class="quiz-topo__pontos" id="quiz-pontos">0 pts</span>
+        </div>
+        <div class="progresso__trilha">
+          <div class="progresso__barra" id="progresso-barra"></div>
+        </div>
+
+        <h2 class="pergunta" id="pergunta-texto">Carregando pergunta...</h2>
+
+        <div class="alternativas" id="alternativas"></div>
+      </section>
+
+      <!-- TELA 3: resultado final -->
+      <section class="tela tela--resultado" id="tela-resultado" data-tela hidden>
+        <span class="resultado__selo">RESULTADO</span>
+        <p class="resultado__jogador" id="resultado-jogador">Jogador</p>
+        <p class="resultado__pontos" id="resultado-pontos">0</p>
+        <p class="resultado__legenda" id="resultado-legenda"></p>
+        <p class="campo-erro" id="erro-salvar"></p>
+
+        <div class="acoes acoes--linha">
+          <button class="botao botao--primario" id="botao-salvar">
+            Salvar pontuação
+          </button>
+          <button class="botao botao--fantasma" id="botao-jogar-de-novo">
+            Jogar novamente
+          </button>
+        </div>
+      </section>
+
+      <!-- TELA 4: ranking geral (top 10) -->
+      <section class="tela tela--ranking" id="tela-ranking" data-tela hidden>
+        <span class="resultado__selo">RANKING — TOP 10</span>
+        <ol class="ranking-lista ranking-lista--grade" id="ranking-lista"></ol>
+        <p class="ranking-vazio" id="ranking-vazio" hidden>
+          Ninguém pontuou ainda. Seja o primeiro!
+        </p>
+        <div class="acoes acoes--linha">
+          <button class="botao botao--primario" id="botao-voltar-inicio">
+            Voltar ao início
+          </button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
